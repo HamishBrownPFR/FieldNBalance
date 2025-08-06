@@ -33,7 +33,9 @@ namespace SVSModel
 
             // Derive Crop Parameters
             thisCrop.TtEstabToHarv = tt.Values.Last();
-            
+
+            thisCrop.EndScheduleDate = calculate95PcUptakeDate(tt, cf.HarvestStage);
+
             thisCrop.TtSowToEmerg = 0;
             if (cf.EstablishStage == "Seed")
             {
@@ -187,6 +189,29 @@ namespace SVSModel
             current.ResFieldLoss -= nShortage * current.SimResults.nHIFieldLoss;
             current.NUptake -= nShortage;
         }
+
+        private static DateTime calculate95PcUptakeDate(Dictionary<DateTime, double> Tt, string HarvestStage)
+        {
+            DateTime returnDate = Tt.Keys.Last();
+            if ((HarvestStage == "Maturity") || (HarvestStage == "Late"))
+            {
+                
+                double RelativeTtAt95Pc = Constants.ProportionTt["LateReproductive"] / Constants.ProportionTt[HarvestStage];
+                double TtAt95Pc = RelativeTtAt95Pc * Tt.Values.Last();
+                returnDate = Tt.Keys.First();
+                double diff = Math.Abs(TtAt95Pc - Tt.Values.First());
+                foreach (DateTime d in Tt.Keys)
+                {
+                    double nextDiff = Math.Abs(TtAt95Pc - Tt[d]);
+                    if (nextDiff < diff)
+                    {
+                        diff = nextDiff;
+                        returnDate = d;
+                    }
+                }
+            }
+            return returnDate;
+        }
     }
     public class CropType
     {
@@ -226,9 +251,10 @@ namespace SVSModel
         public double nHIRoot;
         public double nHIStover;
         public double nHIFieldLoss;
+        public DateTime EndScheduleDate;
 
         /// Crop daily variables
-        
+
         public Dictionary<DateTime, double> RootN;
         public Dictionary<DateTime, double> StoverN;
         public Dictionary<DateTime, double> SaleableProductN;

@@ -95,7 +95,8 @@ namespace SVSModel.Models
             double remainingCropN = thisSim.CropN[endDate] - thisSim.CropN[startDate];
             DateTime[] remainingDates = Functions.DateSeries(startDate, endDate);
             double remainingOrgN = remainingMineralisation(remainingDates, thisSim.NResidues, thisSim.NSoilOM);
-            double surplussMineralN = Math.Max(0, initialN - Constants.Trigger);
+            double Target = thisSim.NUptake[endDate] * 10;
+            double surplussMineralN = initialN - Target;
             return Math.Max(0, remainingCropN - remainingOrgN - surplussMineralN);
         }
 

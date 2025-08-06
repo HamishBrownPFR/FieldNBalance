@@ -88,7 +88,7 @@ namespace SVSModel.Simulation
 
             //Calculate Fertiliser requirements and add into soil N
             DateTime StartSchedullingDate = Fertiliser.startSchedullingDate(nAapplied, testResults, config);
-            DateTime EndSchedullingDate = config.Current.HarvestDate;
+            DateTime EndSchedullingDate = config.Current.SimResults.EndScheduleDate;
             Fertiliser.RemainingFertiliserSchedule(StartSchedullingDate, EndSchedullingDate, ref thisSim);
 
             doNbalanceSummary(ref thisSim);
