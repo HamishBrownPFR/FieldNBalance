@@ -47,7 +47,7 @@ namespace TestModel
             }
 
 
-            List<string> sets = new List<string> { "WS1", "WS2", "CropStage", "Residues", "Location", "Moisture", "Losses" };
+            List<string> sets = new List<string> { "WS1", "WS2", "CropStage", "Residues", "Location", "Moisture", "Losses", "Schedulling" };
 
             //Delete graphs from previous test run
             string graphFolder = Path.Join(Directory.GetCurrentDirectory(), "TestGraphs", "Outputs");
@@ -106,7 +106,7 @@ namespace TestModel
 
             foreach (string test in Tests)
             {
-                if (test[0].ToString() != ">")
+                 if (test[0].ToString() != ">")
                 {
                     int testRow = getTestRow(test, allTests);
 
@@ -123,7 +123,9 @@ namespace TestModel
 
                     MetDataDictionaries metData = ModelInterface.BuildMetDataDictionaries(_config.Prior.EstablishDate, _config.Following.HarvestDate.AddDays(1), weatherStation, actualWeather);
 
-                    object[,] output = Simulation.SimulateField(metData.MeanT, metData.Rain, metData.MeanPET, testResults, nApplied, _config, initialN, false);
+                    bool scheduleFert = set == "Schedulling";
+                    
+                    object[,] output = Simulation.SimulateField(metData.MeanT, metData.Rain, metData.MeanPET, testResults, nApplied, _config, initialN, scheduleFert);
 
                     DataFrameColumn[] columns = new DataFrameColumn[14];
                     List<string> OutPutHeaders = new List<string>();
