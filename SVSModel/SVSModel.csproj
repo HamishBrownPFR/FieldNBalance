@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<id>SVSModel</id>
-		<version>1.2.4</version>
-		<authors>PotatoesNZ</authors>
-		<description>A wrapper of the SVS Model code</description>
+        <ImplicitUsings>disable</ImplicitUsings>
+		<PackageId>SVSModel</PackageId>
+		<Version>1.2.4</Version>
+		<Authors>PotatoesNZ</Authors>
+		<Description>A wrapper of the SVS Model code</Description>
 		<LangVersion>12</LangVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
