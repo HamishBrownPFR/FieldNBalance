@@ -26,6 +26,8 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    permissions: 
+      actions: write
     needs: [ pack ]
     steps:
       - name: Download Artifact
