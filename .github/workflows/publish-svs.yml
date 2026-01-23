@@ -34,14 +34,14 @@ jobs:
         with:
           name: SVSModel
           path: ./output
-#      - name: Upload to NuGet
-#        env:
-#          NUGET_KEY: ${{ secrets.NUGET_KEY }}
-#          PACKAGE_NAME: ${{ format('SVSModel.{0}.nupkg', env.PACKAGE_VERSION) }}
-#        run: |
-#          dotnet nuget push ./output/${PACKAGE_NAME} \
-#            -k ${NUGET_KEY} \
-#            -s https://api.nuget.org/v3/index.json
+      - name: Upload to NuGet
+        env:
+          NUGET_KEY: ${{ secrets.NUGET_KEY }}
+          PACKAGE_NAME: ${{ format('SVSModel.{0}.nupkg', env.PACKAGE_VERSION) }}
+        run: |
+          dotnet nuget push ./output/${PACKAGE_NAME} \
+            -k ${NUGET_KEY} \
+            -s https://api.nuget.org/v3/index.json
       - name: Persist Version
         env:
           GH_TOKEN: ${{ secrets.GH_CLI_PAT }}
