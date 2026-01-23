@@ -16,6 +16,7 @@ jobs:
 
   validation-tests:
     name: Run Validation Tests
+    if: ${{ github.ref_name == 'main' && github.event_name != 'pull_request' }}
     uses: ./.github/workflows/validation-tests.yml
     secrets: inherit
 
