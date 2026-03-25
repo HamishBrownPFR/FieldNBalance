@@ -1,5 +1,11 @@
 ﻿name: Main
 on:
+  workflow_dispatch:
+    inputs:
+      targetBranch:
+        description: "Branch to target"
+        required: true
+        default: "develop"
   push:
     branches:
       - main
@@ -16,14 +22,18 @@ jobs:
 
   validation-tests:
     name: Run Validation Tests
-    if: ${{ github.ref_name == 'main' && github.event_name != 'pull_request' }}
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch == 'main') ||
+      (github.event_name != 'workflow_dispatch' && github.event_name != 'pull_request' && github.ref_name == 'main')
     uses: ./.github/workflows/validation-tests.yml
     secrets: inherit
 
   publish-nuget:
     name: Publish Nuget
     needs: [ unit-tests ]
-    if: ${{ github.ref_name == 'main' && github.event_name != 'pull_request' }}
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch == 'main') ||
+      (github.event_name != 'workflow_dispatch' && github.event_name != 'pull_request' && github.ref_name == 'main')
     uses: ./.github/workflows/publish-svs.yml
     secrets: inherit
     with:
@@ -32,7 +42,9 @@ jobs:
   publish-nuget-beta:
     name: Publish Nuget Beta
     needs: [ unit-tests ]
-    if: ${{ github.ref_name != 'main' }}
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch != 'main') ||
+      (github.event_name != 'workflow_dispatch' && github.ref_name != 'main')
     uses: ./.github/workflows/publish-svs.yml
     secrets: inherit
     with:
