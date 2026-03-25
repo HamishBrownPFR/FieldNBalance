@@ -1,11 +1,6 @@
 ﻿name: Main
 on:
   workflow_dispatch:
-    inputs:
-      targetBranch:
-        description: "Branch to target"
-        required: true
-        default: "develop"
   push:
     branches:
       - main
@@ -14,6 +9,10 @@ on:
     types: [ opened, synchronize, reopened ]
   release:
     types: [ published ]
+
+env:
+  IS_MAIN: ${{ github.ref_name == 'main' }}
+
 jobs:
   unit-tests:
     name: Run Unit Tests
@@ -22,18 +21,14 @@ jobs:
 
   validation-tests:
     name: Run Validation Tests
-    if: >
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch == 'main') ||
-      (github.event_name != 'workflow_dispatch' && github.event_name != 'pull_request' && github.ref_name == 'main')
+    if: ${{ env.IS_MAIN && github.event_name != 'pull_request' }}
     uses: ./.github/workflows/validation-tests.yml
     secrets: inherit
 
   publish-nuget:
     name: Publish Nuget
     needs: [ unit-tests ]
-    if: >
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch == 'main') ||
-      (github.event_name != 'workflow_dispatch' && github.event_name != 'pull_request' && github.ref_name == 'main')
+    if: ${{ env.IS_MAIN && github.event_name != 'pull_request' }}
     uses: ./.github/workflows/publish-svs.yml
     secrets: inherit
     with:
@@ -42,9 +37,7 @@ jobs:
   publish-nuget-beta:
     name: Publish Nuget Beta
     needs: [ unit-tests ]
-    if: >
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch != 'main') ||
-      (github.event_name != 'workflow_dispatch' && github.ref_name != 'main')
+    if: ${{ !env.IS_MAIN }}
     uses: ./.github/workflows/publish-svs.yml
     secrets: inherit
     with:
