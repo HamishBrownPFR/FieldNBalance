@@ -1,5 +1,6 @@
 ﻿name: Main
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,6 +9,7 @@ on:
     types: [ opened, synchronize, reopened ]
   release:
     types: [ published ]
+
 jobs:
   unit-tests:
     name: Run Unit Tests
